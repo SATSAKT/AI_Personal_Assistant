@@ -1,0 +1,356 @@
+{
+  "name": "Expense Logger",
+  "nodes": [
+    {
+      "parameters": {
+        "inputSource": "jsonExample",
+        "jsonExample": "{\n\"text\":\"spent 250 on food lunch at office\"\n}"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -544,
+        -80
+      ],
+      "id": "253290f6-8794-41c4-89d8-01d74228dce1",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ab8eb11d-518d-437e-a05d-2833f29d05ae",
+              "name": "date",
+              "value": "={{ $json.date }}",
+              "type": "string"
+            },
+            {
+              "id": "aa96c3ff-a8f7-4aeb-bc85-90b3c6b2389d",
+              "name": "amount",
+              "value": "={{ $json.amount }}",
+              "type": "number"
+            },
+            {
+              "id": "f18dad55-9085-4248-aaca-25caaed6538e",
+              "name": "category",
+              "value": "={{ $json.category }}",
+              "type": "string"
+            },
+            {
+              "id": "c70fdd55-d9ea-4608-bf42-772b2b715811",
+              "name": "note",
+              "value": "={{ $json.note }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        160,
+        -80
+      ],
+      "id": "ef685347-98fd-439b-9118-2dfbc48cc8db",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "jsCode": "const parsed = JSON.parse($json.text);\n\nreturn [\n  {\n    json: parsed\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -32,
+        -80
+      ],
+      "id": "9e57058b-9d2d-4d79-91c7-2f47fbfc0296",
+      "name": "JSON output"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1_-aEOj2aNE_J_4XfwCvH9O6wfNwzcopFSwpldP1Xmfg",
+          "mode": "list",
+          "cachedResultName": "Personal Finance Tracker",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1_-aEOj2aNE_J_4XfwCvH9O6wfNwzcopFSwpldP1Xmfg/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Expenses",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1_-aEOj2aNE_J_4XfwCvH9O6wfNwzcopFSwpldP1Xmfg/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": []
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        576,
+        -80
+      ],
+      "id": "03a8e32b-2def-4e2d-85db-5d406bdfe2f2",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "1rxNMAL38UdJFDYS",
+          "name": "sathisheee1297"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4.1-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4.1-mini"
+        },
+        "builtInTools": {},
+        "options": {
+          "textFormat": {
+            "textOptions": {
+              "type": "json_object"
+            }
+          }
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -384,
+        112
+      ],
+      "id": "8c377ed3-5233-44bd-9077-e997fe88f0f9",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "5TjB6IyX5hEsLl2l",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.text }}",
+        "hasOutputParser": true,
+        "messages": {
+          "messageValues": [
+            {
+              "message": "You are an expense parser.\n\nExtract:\n\n* amount\n* category\n* note\n* date\n\nReturn ONLY valid JSON.\n\nCategories allowed:\n\n* Food\n* Travel\n* Shopping\n* Entertainment\n* Bills\n* Health\n* Other\n\nRules:\n\n* If category is unclear, use \"Other\".\n* Date must be in YYYY-MM-DD format.\n* If the user does not mention a date, use this date: {{ $now.format('yyyy-MM-dd') }}\n\nReturn format:\n{\n\"amount\": number,\n\"category\": \"string\",\n\"note\": \"string\",\n\"date\": \"YYYY-MM-DD\"\n}\n"
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        -352,
+        -80
+      ],
+      "id": "cb31f833-3400-48a5-a89b-c7fdcf8aba12",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "jsCode": "const now = new Date();\nconst currentMonth = now.getMonth();\nconst currentYear = now.getFullYear();\n\nlet total = 0;\nconst categoryTotals = {};\n\nfor (const item of items) {\nconst row = item.json;\n\nif (!row.date || !row.amount) continue;\n\nconst rowDate = new Date(row.date);\n\nconst sameMonth =\nrowDate.getMonth() === currentMonth &&\nrowDate.getFullYear() === currentYear;\n\nif (sameMonth) {\nconst amount = Number(row.amount || 0);\nconst category = row.category || \"Other\";\n\ntotal += amount;\n\nif (!categoryTotals[category]) {\n  categoryTotals[category] = 0;\n}\n\ncategoryTotals[category] += amount;\n\n}\n}\n\nconst latestExpense = $('Edit Fields').first().json;\n\nconst emojiMap = {\nFood: \"🍔\",\nTravel: \"🚕\",\nShopping: \"🛍️\",\nEntertainment: \"🎬\",\nBills: \"💡\",\nHealth: \"🏥\",\nOther: \"📌\"\n};\n\nlet response = `✅ Expense logged successfully\\n`;\nresponse += `💰 Total spent: ₹${total}\\n`;\n\nfor (const [category, amount] of Object.entries(categoryTotals)) {\nconst emoji = emojiMap[category] || \"📌\";\nresponse += `${emoji} ${category}: ₹${amount}\\n`;\n}\n\nreturn [\n{\njson: {\nresponse\n}\n}\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        784,
+        -80
+      ],
+      "id": "ce88740a-86d2-4ced-82da-2b7105a90a4e",
+      "name": "Calculate current month total"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1_-aEOj2aNE_J_4XfwCvH9O6wfNwzcopFSwpldP1Xmfg",
+          "mode": "list",
+          "cachedResultName": "Personal Finance Tracker",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1_-aEOj2aNE_J_4XfwCvH9O6wfNwzcopFSwpldP1Xmfg/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Expenses",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1_-aEOj2aNE_J_4XfwCvH9O6wfNwzcopFSwpldP1Xmfg/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "date": "={{ $json.date }}",
+            "amount": "={{ $json.amount }}",
+            "category": "={{ $json.category }}",
+            "note": "={{ $json.note }}"
+          },
+          "matchingColumns": [
+            "date"
+          ],
+          "schema": [
+            {
+              "id": "date",
+              "displayName": "date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "amount",
+              "displayName": "amount",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "category",
+              "displayName": "category",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "note",
+              "displayName": "note",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        368,
+        -80
+      ],
+      "id": "fc348220-ac71-47d1-abc5-bbf87013f346",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "1rxNMAL38UdJFDYS",
+          "name": "sathisheee1297"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "JSON output": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Calculate current month total",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "JSON output",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "a4f6740a-9391-4fce-9c28-b1b2db8d7b56",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "cdc6df86a355f36eb13300f08d7c79c6bf190deec275ae989b6b169d6e87ce7f"
+  },
+  "id": "Sv8sgGRVYuxa6ZV3",
+  "tags": []
+}

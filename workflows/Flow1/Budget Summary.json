@@ -1,0 +1,155 @@
+{
+  "name": "Budget Summary",
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "chatID"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -480,
+        -96
+      ],
+      "id": "980b297a-55f6-4753-801b-e55e1cfc81c3",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1_-aEOj2aNE_J_4XfwCvH9O6wfNwzcopFSwpldP1Xmfg",
+          "mode": "list",
+          "cachedResultName": "Personal Finance Tracker",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1_-aEOj2aNE_J_4XfwCvH9O6wfNwzcopFSwpldP1Xmfg/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Expenses",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1_-aEOj2aNE_J_4XfwCvH9O6wfNwzcopFSwpldP1Xmfg/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -272,
+        -96
+      ],
+      "id": "7ec49c3d-5504-4cda-89f6-c4c4566e0ebf",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "1rxNMAL38UdJFDYS",
+          "name": "sathisheee1297"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const now = new Date();\nconst currentMonth = now.getMonth();\nconst currentYear = now.getFullYear();\n\nconst totals = {\n  Food: 0,\n  Travel: 0,\n  Shopping: 0,\n  Entertainment: 0,\n  Bills: 0,\n  Health: 0,\n  Other: 0\n};\n\nfor (const item of items) {\n  const row = item.json;\n\n  if (!row.date || !row.amount) continue;\n\n  const rowDate = new Date(row.date);\n\n  const sameMonth =\n    rowDate.getMonth() === currentMonth &&\n    rowDate.getFullYear() === currentYear;\n\n  if (!sameMonth) continue;\n\n  const category = row.category || 'Other';\n\n  if (!totals[category]) {\n    totals[category] = 0;\n  }\n\n  totals[category] += Number(row.amount || 0);\n}\n\nconst totalSpent = Object.values(totals).reduce((a, b) => a + b, 0);\n\nreturn [\n  {\n    json: {\n      totals,\n      totalSpent\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -64,
+        -96
+      ],
+      "id": "bd5d5e70-a68d-4167-82e9-aa2d072478ed",
+      "name": "Group by category"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4.1-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4.1-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=={{\nJSON.stringify($json)\n}}\n"
+            },
+            {
+              "role": "system",
+              "content": "You are a personal finance advisor.\n\nThe user will provide category-wise monthly spending.\n\nGive:\n- 3 short insight lines\n- 1 actionable saving tip\n\nFriendly tone.\nShort response."
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        144,
+        -96
+      ],
+      "id": "77cedd46-7c3f-4a29-b96c-10fb3fb4e5b1",
+      "name": "Message a model",
+      "credentials": {
+        "openAiApi": {
+          "id": "5TjB6IyX5hEsLl2l",
+          "name": "OpenAI account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Group by category",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Group by category": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "948cb5d2-aa1d-4387-a867-fbcbf20a63a8",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "cdc6df86a355f36eb13300f08d7c79c6bf190deec275ae989b6b169d6e87ce7f"
+  },
+  "id": "XREOZqLqS5Pqc9Nn",
+  "tags": []
+}

@@ -1,0 +1,289 @@
+{
+  "name": "MCP Server",
+  "nodes": [
+    {
+      "parameters": {
+        "description": "Calls the Market Data child workflow and returns a formatted market snapshot with optional AI commentary.",
+        "workflowId": {
+          "__rl": true,
+          "value": "niL3ZolAb20nqYO9",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/niL3ZolAb20nqYO9",
+          "cachedResultName": "Daily Share Market Snapshot"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        -96,
+        48
+      ],
+      "id": "2d4465b7-44ff-4a5c-b270-7575f6d16bc4",
+      "name": "Daily Share Market Snapshot"
+    },
+    {
+      "parameters": {
+        "description": "Fetch and summarise the latest AI news headlines from TechCrunch AI and VentureBeat AI.\n\nUse this tool immediately when the user asks about:\n- AI news\n- latest AI updates\n- AI headlines\n- OpenAI news\n- Anthropic news\n- Google AI news\n- recent AI developments\n\nReturn only the summarized news.",
+        "workflowId": {
+          "__rl": true,
+          "value": "aSkQn8tG42yD2b7G",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/aSkQn8tG42yD2b7G",
+          "cachedResultName": "AI News Summarizer"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        -304,
+        48
+      ],
+      "id": "5c79ba53-88ea-47cc-bb01-a34b5c95007f",
+      "name": "AI News Summarizer"
+    },
+    {
+      "parameters": {
+        "description": "Creates and publishes LinkedIn posts automatically using n8n workflows powered by AI automation.\n",
+        "workflowId": {
+          "__rl": true,
+          "value": "noIKIIjUEvS03sGC",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/noIKIIjUEvS03sGC",
+          "cachedResultName": "LinkedIn Post"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "topic": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('topic', ``, 'string') }}",
+            "post_type": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('post_type', ``, 'string') }}",
+            "tone": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('tone', ``, 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "topic",
+              "displayName": "topic",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "post_type",
+              "displayName": "post_type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "tone",
+              "displayName": "tone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        96,
+        48
+      ],
+      "id": "76dded5d-82f7-4bf8-a858-f71e8e545e82",
+      "name": "LinkedIn Post"
+    },
+    {
+      "parameters": {
+        "description": "Parses user expense messages, extracts amount/category/date/details, and logs the expense into the tracker with structured financial records.\n",
+        "workflowId": {
+          "__rl": true,
+          "value": "Sv8sgGRVYuxa6ZV3",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/Sv8sgGRVYuxa6ZV3",
+          "cachedResultName": "Expense Logger"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "text": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('text', ``, 'string') }}"
+          },
+          "matchingColumns": [
+            "text"
+          ],
+          "schema": [
+            {
+              "id": "text",
+              "displayName": "text",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        288,
+        48
+      ],
+      "id": "1bb01c7e-e17b-49a1-b92d-368a558cea06",
+      "name": "Expense Logger"
+    },
+    {
+      "parameters": {
+        "path": "afd51f77-a027-4fdf-a721-6642c900c4b5"
+      },
+      "type": "@n8n/n8n-nodes-langchain.mcpTrigger",
+      "typeVersion": 2,
+      "position": [
+        -144,
+        -288
+      ],
+      "id": "d2eac0eb-70f2-40b1-9e99-2e0b60803661",
+      "name": "MCP Server Trigger",
+      "webhookId": "afd51f77-a027-4fdf-a721-6642c900c4b5"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "XREOZqLqS5Pqc9Nn",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/XREOZqLqS5Pqc9Nn",
+          "cachedResultName": "Budget Summary"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "chatID": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('chatID', ``, 'string') }}"
+          },
+          "matchingColumns": [
+            "chatID"
+          ],
+          "schema": [
+            {
+              "id": "chatID",
+              "displayName": "chatID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        480,
+        48
+      ],
+      "id": "b470b925-aaa9-4c5e-a104-b2d83a22c3b7",
+      "name": "Budget Summary"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Daily Share Market Snapshot": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI News Summarizer": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LinkedIn Post": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Expense Logger": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Budget Summary": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "a297c0a4-5319-45ff-b73c-2aad27268c9e",
+  "meta": {
+    "instanceId": "cdc6df86a355f36eb13300f08d7c79c6bf190deec275ae989b6b169d6e87ce7f"
+  },
+  "id": "gfPpCNnJDsFQxn72",
+  "tags": []
+}

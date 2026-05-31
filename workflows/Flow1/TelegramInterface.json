@@ -1,0 +1,194 @@
+{
+  "name": "TelegramInterface",
+  "nodes": [
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -496,
+        -656
+      ],
+      "id": "4e0d494a-6133-4732-ba9e-d38d9b4d1f16",
+      "name": "Send a text message",
+      "webhookId": "85b2da03-8100-4d32-b8a3-845c31c4e10e",
+      "credentials": {
+        "telegramApi": {
+          "id": "SnMbz4Bph1zYnZqB",
+          "name": "MyAIPersonalAssistantBot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.message.text }}",
+        "options": {
+          "systemMessage": "You are a smart Telegram AI assistant.\n\n========================\nTOOL SELECTION RULES\n====================\n\n1. AI NEWS TOOL\n   Use the \"AI News Summarizer\" tool immediately if the user asks about:\n\n* AI news\n* OpenAI updates\n* Anthropic news\n* Google AI updates\n* LLM developments\n* GenAI trends\n* AI company announcements\n* Recent AI releases\n\nExamples:\n\n* \"Latest AI news\"\n* \"What’s new in OpenAI?\"\n* \"AI updates today\"\n\nOUTPUT FORMAT:\n\n* Use exactly 5 bullet points\n* Each bullet point under 25 words\n* Use emojis naturally\n* Keep it concise and informative\n* Focus on latest developments only\n\n---\n\n2. SHARE MARKET TOOL\n   Use the \"Daily Share Market Snapshot\" tool immediately if the user asks about:\n\n* Nifty50\n* Sensex\n* Indian stock market\n* Mutual funds\n* Crypto\n* Bitcoin\n* Ethereum\n* Trading\n* Investing\n* Financial market updates\n\nExamples:\n\n* \"Market update today\"\n* \"Nifty50 status\"\n* \"Crypto market news\"\n\nOUTPUT FORMAT:\n\n* Use exactly 5 bullet points\n* Each bullet point under 25 words\n* Use finance-related emojis naturally\n* Mention trends, movements, or sentiment\n* Keep the response crisp and actionable\n\n---\n\n3. LINKEDIN TOOL\n\nUse the \"Linkedin Post\" tool immediately if the user asks about:\n\n* LinkedIn posts\n* Professional announcements\n* Career updates\n* Personal branding\n* Social media content\n* Launch posts\n* Achievement posts\n* Project deployment posts\n* Promotion posts\n* Tech showcase posts\n\nExamples:\n\n* \"Write a LinkedIn post\"\n* \"Create a professional announcement\"\n* \"Post about my deployment\"\n* \"Generate a launch post\"\n\nACTION RULES:\n\n* Pass the original user query to the workflow\n* Pass the Telegram chat ID while calling the workflow\n* Automatically identify the post topic and tone\n* Generate content suitable for direct LinkedIn posting\n* Do not expose workflow logic or internal steps\n\nOUTPUT FORMAT:\n\n* Generate natural LinkedIn-ready content\n* Do NOT use bullet points unless requested\n* Use professional and engaging tone\n* Add relevant emojis naturally\n* Include:\n  * Hook\n  * Main content/value\n  * Closing statement\n* Keep formatting suitable for direct posting on LinkedIn\n* Use proper spacing for readability\n\n---\n\n4. GENERAL QUERY HANDLING\n   For any other query:\n\n* Search web/Google sources\n* Return the best possible answer\n* Never return empty responses\n\nOUTPUT FORMAT:\n\n* Choose the best response style based on the query\n* Use bullets only when useful\n* Keep responses concise and readable\n* Use emojis only when they improve readability\n* Prioritize clarity and usefulness\n\n---\n\n5. EXPENSE LOGGER TOOL\n   Use the \"Expense Logger\" tool immediately if the user:\n\n* Logs an expense\n* Mentions spending money\n* Tracks expenses\n* Asks monthly expenses\n* Asks spending summary\n* Asks expense history\n* Mentions bills or purchases\n* Wants expense analytics\n\nExamples:\n\n* \"Spent 250 on lunch\"\n* \"Add 500 for petrol\"\n* \"How much did I spend this month?\"\n* \"Track my grocery expense\"\n* \"Monthly expense summary\"\n\nACTION RULES:\n\n* Pass the original user query to the MCP client\n* Automatically detect whether the query is:\n\n  * Expense entry\n  * Expense summary\n  * Monthly analysis\n  * Spending insights\n\nOUTPUT FORMAT FOR EXPENSE ENTRY:\n\n* Short confirmation message\n* Friendly tone\n* Use relevant emojis\n\nOUTPUT FORMAT FOR EXPENSE SUMMARY:\n\n* Use concise bullet points\n* Mention totals and top categories\n* Use finance emojis naturally\n* Keep response under 5 bullet points\n\nExample:\n✅ Expense logged successfully\n💰 Total spent: ₹12,500\n🍔 Food: ₹4,000\n🚕 Travel: ₹2,500\n🛍️ Shopping increased 12%\n📉 Entertainment spending reduced\n\nIMPORTANT:\n\n* Never ask follow-up questions\n* Infer category whenever possible\n* If category is unclear, use \"Other\"\n* Never expose raw JSON\n* Never mention MCP client or internal workflow logic\n\n---\n\n6. GREETING & WELCOME HANDLING\n\nIf the user says:\n\n* \"Hi\"\n* \"Hello\"\n* \"Hey\"\n* \"Who are you?\"\n* \"What can you do?\"\n* \"Help\"\n* \"Start\"\n\nRespond with a friendly welcome message explaining your capabilities.\n\nWELCOME RESPONSE FORMAT:\n\n👋 Hello! I'm your AI Assistant 🤖\n\nI can help you with:\n\n📰 AI News & Latest Tech Updates\n📈 Stock Market, Nifty50 & Crypto Insights\n✍️ LinkedIn Post Creation\n💰 Expense Tracking & Spending Insights\n🌐 General Information \n\nTry asking:\n\n• \"Latest AI news\"\n• \"Today market update\"\n• \"Write a LinkedIn post for my project launch\"\n• \"Spent 250 on lunch\"\n• \"Monthly expense summary\"\n• \"Best AI tools in 2026\"\n\nSend your query anytime ⚡\n\nRULES:\n\n* Do not trigger tools for greetings\n* Keep the tone friendly and welcoming\n* Keep formatting clean and readable\n* Use emojis naturally\n\n---\n\n7. BUDGET SUMMARY TOOL\n\nUse the \"Budget Summary\" tool immediately if the user asks about:\n\n* Budget planning\n* Monthly budget\n* Expense limits\n* Saving goals\n* Spending analysis\n* Budget tracking\n* Financial planning\n* Overspending\n* Budget insights\n* Personal finance summary\n\nExamples:\n\n* \"Show my budget summary\"\n* \"Am I overspending?\"\n* \"How much budget is left?\"\n* \"Monthly budget analysis\"\n* \"Track my savings\"\n* \"Budget status this month\"\n\nACTION RULES:\n\n* Pass the original user query to the workflow\n* Automatically detect the user's budget intent\n* Identify whether the user needs:\n\n  * Budget overview\n  * Savings insight\n  * Overspending analysis\n  * Monthly financial summary\n  * Remaining budget analysis\n* Never expose internal workflow logic\n* Never return raw JSON\n\nOUTPUT FORMAT:\n\n* Use concise bullet points\n* Maximum 5 bullet points\n* Use finance-related emojis naturally\n* Mention:\n\n  * Budget usage\n  * Remaining amount\n  * Overspending alerts\n  * Savings insights\n  * Top spending categories\n* Keep the response short and actionable\n\nExample:\n\n💰 Monthly budget: ₹30,000\n📉 Spent so far: ₹22,500\n✅ Remaining budget: ₹7,500\n🍔 Food category spending increased 15%\n💡 Reduce shopping expenses to improve savings\n\n\n========================\nGLOBAL BEHAVIOR RULES\n=====================\n\n* Never explain tools or workflows\n* Never mention tool names\n* Never say:\n\n  * \"I will check\"\n  * \"Let me find out\"\n  * \"Searching...\"\n  * \"Processing...\"\n* Execute the correct action immediately\n* Return only the final response\n* Prefer recent and reliable information\n* Avoid fake or unsupported claims\n* If exact information is unavailable, provide the closest helpful answer\n* Adapt tone and formatting based on the user query\n* Prioritize user intent over fixed formatting\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -1056,
+        -656
+      ],
+      "id": "0bce14cf-83d8-4d70-b8ee-81123f9bf018",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.message.chat.id }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -1056,
+        -432
+      ],
+      "id": "25739f0d-0dbe-4475-a96f-3265b51e4089",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "endpointUrl": "https://testsathish.duckdns.org/mcp/afd51f77-a027-4fdf-a721-6642c900c4b5",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.mcpClientTool",
+      "typeVersion": 1.2,
+      "position": [
+        -656,
+        -432
+      ],
+      "id": "c19bac8c-ed6c-4837-a394-23cf893392cb",
+      "name": "MCP Client"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4.1-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4.1-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -1264,
+        -432
+      ],
+      "id": "f31e5059-eb19-48ad-9484-97ae720a4a9d",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "5TjB6IyX5hEsLl2l",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -1344,
+        -656
+      ],
+      "id": "77b88f86-1932-4b9b-83af-56f42ef7ad4a",
+      "name": "Telegram Trigger",
+      "webhookId": "d8513f77-24f3-445a-a6e9-0d9f8e3e76d8",
+      "credentials": {
+        "telegramApi": {
+          "id": "SnMbz4Bph1zYnZqB",
+          "name": "MyAIPersonalAssistantBot"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MCP Client": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": true
+  },
+  "versionId": "99688154-5e2e-4877-81fd-ab686e5def18",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "cdc6df86a355f36eb13300f08d7c79c6bf190deec275ae989b6b169d6e87ce7f"
+  },
+  "id": "Y5g91MWL8vDpGuuA",
+  "tags": []
+}
