@@ -1,0 +1,469 @@
+{
+  "name": "LinkedIn Post",
+  "nodes": [
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4.1-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4.1-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=Write a professional LinkedIn post about:\n\nTopic: {{$json.topic}}\nPost Type: {{ $json.post_type }}\nTone: {{ $json.tone }}\n\nRequirements:\n- Strong opening hook\n- 3 useful insights\n- Professional tone\n- Short paragraphs\n- End with engagement question\n- Use emojis sparingly"
+            },
+            {
+              "role": "system",
+              "content": "You are an expert LinkedIn ghostwriter.\nWrite professional and engaging LinkedIn posts.\nUse concise formatting.\nAvoid hashtags spam.\nUse emojis sparingly."
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        112,
+        -192
+      ],
+      "id": "ba183c55-133d-4050-943c-77295c34f80a",
+      "name": "Generate LinkedIn Post",
+      "credentials": {
+        "openAiApi": {
+          "id": "5TjB6IyX5hEsLl2l",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4.1-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4.1-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=Create a professional DALL-E image prompt for LinkedIn.\n\nTopic: {{ $json.topic }}\nPost Type: {{ $json.post_type }}\nTone: {{ $json.tone }}\n\nStyle:\n- Corporate\n- Minimalist\n- Dark blue\n- Modern\n- No text\n- Banner style"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        112,
+        64
+      ],
+      "id": "538a285c-892f-4312-868f-a9d29756422a",
+      "name": "Generate Image Prompt",
+      "credentials": {
+        "openAiApi": {
+          "id": "5TjB6IyX5hEsLl2l",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-image-2",
+          "mode": "list",
+          "cachedResultName": "GPT-IMAGE-2"
+        },
+        "prompt": "={{ $json.output[0].content[0].text }}",
+        "options": {
+          "quality": "medium",
+          "size": "1024x1024"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        448,
+        64
+      ],
+      "id": "255563a2-cfbd-4e12-8f12-fd31c0e67479",
+      "name": "Generate an image",
+      "credentials": {
+        "openAiApi": {
+          "id": "5TjB6IyX5hEsLl2l",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        800,
+        -64
+      ],
+      "id": "24038974-4cb3-4b1c-b32f-35a98b3d7836",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.topic }}",
+        "hasOutputParser": true,
+        "messages": {
+          "messageValues": [
+            {
+              "message": "You are a LinkedIn topic parser. \n\nExtract:  \n* topic \n* post_type \n* tone \n\nReturn ONLY valid JSON.  \n\nPost types allowed:  \n* Achievement \n* Launch \n* Learning \n* Career Update \n* Project \n* Motivation \n* Hiring \n* Networking \n* AI \n* Tech \n* Other  \n\nTone values allowed:  \n* Professional \n* Inspirational \n* Casual \n* Technical \n* Excited  \n\nRules:  \n* Detect the main LinkedIn topic from the user input. \n* Identify the most suitable post type. \n* Extract important keywords from the text. \n* If tone is unclear, use \"Professional\". \n* If post type is unclear, use \"Other\". \n* Return only JSON. \n* Do not add explanations or markdown.  \n\nReturn format: \n{ \n \"topic\": \"string\", \n \"post_type\": \"string\", \n \"tone\": \"string\"\n}"
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        -464,
+        -64
+      ],
+      "id": "0bd96cdc-87e0-4e2b-9e21-7a14903281ae",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4.1-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4.1-mini"
+        },
+        "builtInTools": {},
+        "options": {
+          "textFormat": {
+            "textOptions": {
+              "type": "json_object"
+            }
+          }
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -576,
+        144
+      ],
+      "id": "d4ce4caa-6f87-4211-9415-e55f9ff613eb",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "5TjB6IyX5hEsLl2l",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const parsed = JSON.parse($json.text);\n\nreturn [\n  {\n    json: parsed\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -160,
+        -64
+      ],
+      "id": "f6626ec8-68d3-44bf-869a-40e162ef1b51",
+      "name": "JSON output"
+    },
+    {
+      "parameters": {
+        "inputSource": "jsonExample",
+        "jsonExample": "{\n\"topic\": \"AI Automation\",\n  \"post_type\": \"AI\",\n  \"tone\": \"Professional\"\n}"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -672,
+        -64
+      ],
+      "id": "b348ab93-b38e-4460-968d-c67b3bb95f26",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "operation": "sendPhoto",
+        "chatId": "={{ $('Get ChatId').item.json.chatId }}",
+        "binaryData": true,
+        "binaryPropertyName": "={{ $('Generate an image').item.json.fileName }}",
+        "additionalFields": {
+          "caption": "= \n{{ $('Generate LinkedIn Post').item.json.output[0].content[0].text }}\n\nReply: \nYES = publish \nREGEN = regenerate image \nNO = cancel"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1024,
+        -64
+      ],
+      "id": "668d9fb2-5393-48e3-b4ac-7ccc3517cd58",
+      "name": "Send a photo message",
+      "webhookId": "9b859d72-e1f7-4d29-8009-7cd1c5c7c404",
+      "credentials": {
+        "telegramApi": {
+          "id": "SnMbz4Bph1zYnZqB",
+          "name": "MyAIPersonalAssistantBot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "bd3fff8a-2cd8-4feb-8e6c-eb8e00310e44",
+              "name": "caption",
+              "value": "={{ $json.result.caption }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1216,
+        -64
+      ],
+      "id": "0c751eb6-9848-488f-8d9c-b619bf55539c",
+      "name": "Store Resume Data"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "zpTaN1FmAjzxAnbs",
+          "mode": "list",
+          "cachedResultName": "TelegramChatId",
+          "cachedResultUrl": "/projects/jnkLp9tTmtDdLTo1/datatables/zpTaN1FmAjzxAnbs"
+        }
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        448,
+        -192
+      ],
+      "id": "c4a2614e-45db-4c10-ae64-cff49d85d208",
+      "name": "Get ChatId"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "dataTableId": {
+          "__rl": true,
+          "value": "o1c9o8RxGQ50bu8t",
+          "mode": "list",
+          "cachedResultName": "LinkedinPost",
+          "cachedResultUrl": "/projects/jnkLp9tTmtDdLTo1/datatables/o1c9o8RxGQ50bu8t"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "caption",
+              "keyValue": "={{ $json.caption }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "caption": "={{ $json.caption }}"
+          },
+          "matchingColumns": [
+            "caption"
+          ],
+          "schema": [
+            {
+              "id": "caption",
+              "displayName": "caption",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        1424,
+        -64
+      ],
+      "id": "b19bf7b3-c545-43c2-90b0-bfe704728943",
+      "name": "Update row(s)"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Generate LinkedIn Post": {
+      "main": [
+        [
+          {
+            "node": "Get ChatId",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Image Prompt": {
+      "main": [
+        [
+          {
+            "node": "Generate an image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate an image": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Send a photo message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "JSON output",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "JSON output": {
+      "main": [
+        [
+          {
+            "node": "Generate LinkedIn Post",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Generate Image Prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a photo message": {
+      "main": [
+        [
+          {
+            "node": "Store Resume Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Store Resume Data": {
+      "main": [
+        [
+          {
+            "node": "Update row(s)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get ChatId": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update row(s)": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "faaa6e44-db55-44ee-9999-5bdbaffba0a7",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "cdc6df86a355f36eb13300f08d7c79c6bf190deec275ae989b6b169d6e87ce7f"
+  },
+  "id": "noIKIIjUEvS03sGC",
+  "tags": []
+}
