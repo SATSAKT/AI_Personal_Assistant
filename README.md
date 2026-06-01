@@ -21,16 +21,6 @@ Telegram message
                └─> LinkedIn Post            (LLM post + DALL·E image → Telegram approval)
 ```
 
-### Flow 3 — Scheduled morning brief
-
-A separate workflow runs on a daily schedule (9:00) and pushes a combined AI + market digest to Telegram without user input.
-
-```
-Schedule Trigger (9:00)
-   └─> Morning Brief (agent + AI News + Market Snapshot tools)
-         └─> TelegramChatId lookup → Send message
-```
-
 ### Flow 2 — Autonomous newsletter → LinkedIn
 
 A Gmail trigger watches the inbox for AI newsletters and turns them into LinkedIn drafts. The user approves, rejects, or asks for a rewrite from Telegram, and the approved post is published.
@@ -43,6 +33,16 @@ Gmail (therundown.ai / techcrunch.com)
                      ├─ APPROVE  → LinkedIn Create a post → Telegram "Posted"
                      ├─ REJECT   → Telegram "Post rejected"
                      └─ REWRITE  → LLM rewrite → re-prompt for approval
+```
+
+### Flow 3 — Scheduled morning brief
+
+A separate workflow runs on a daily schedule (9:00) and pushes a combined AI + market digest to Telegram without user input.
+
+```
+Schedule Trigger (9:00)
+   └─> Morning Brief (agent + AI News + Market Snapshot tools)
+         └─> TelegramChatId lookup → Send message
 ```
 
 ## Repository layout
@@ -66,9 +66,9 @@ workflows/
 | 1 | Expense Logger | [doc](documentation/Expense%20Logger.md) | [json](workflows/Flow1/Expense%20Logger.json) |
 | 1 | Budget Summary | [doc](documentation/Budget%20Summary.md) | [json](workflows/Flow1/Budget%20Summary.json) |
 | 1 | LinkedIn Post | [doc](documentation/LinkedIn%20Post.md) | [json](workflows/Flow1/LinkedIn%20Post.json) |
-| 3 | Morning Brief | [doc](documentation/Morning%20Brief.md) | [json](workflows/Flow3/Morning%20Brief.json) |
 | 2 | AI Newsletter Auto Post | [doc](documentation/AI%20Newsletter%20Auto%20Post.md) | [json](workflows/Flow2/AI%20Newsletter%20Auto%20Post.json) |
 | 2 | Telegram Approval Handler | [doc](documentation/Telegram%20Approval%20Handler.md) | [json](workflows/Flow2/Telegram%20Approval%20Handler.json) |
+| 3 | Morning Brief | [doc](documentation/Morning%20Brief.md) | [json](workflows/Flow3/Morning%20Brief.json) |
 
 ## Services & credentials
 
