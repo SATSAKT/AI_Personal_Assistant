@@ -4,7 +4,7 @@ A collection of [n8n](https://n8n.io/) workflows that act as a personal AI assis
 
 ## Architecture
 
-The project is split into two flows:
+The project is split into three flows:
 
 ### Flow 1 — On-demand assistant (Telegram + MCP)
 
@@ -21,7 +21,7 @@ Telegram message
                └─> LinkedIn Post            (LLM post + DALL·E image → Telegram approval)
 ```
 
-### Scheduled morning brief
+### Flow 3 — Scheduled morning brief
 
 A separate workflow runs on a daily schedule (9:00) and pushes a combined AI + market digest to Telegram without user input.
 
@@ -52,6 +52,7 @@ documentation/   # Markdown description of each workflow
 workflows/
   Flow1/         # On-demand Telegram/MCP assistant
   Flow2/         # Newsletter → LinkedIn auto-post + approval handler
+  Flow3/         # Scheduled morning brief
 ```
 
 ## Workflows
@@ -65,7 +66,7 @@ workflows/
 | 1 | Expense Logger | [doc](documentation/Expense%20Logger.md) | [json](workflows/Flow1/Expense%20Logger.json) |
 | 1 | Budget Summary | [doc](documentation/Budget%20Summary.md) | [json](workflows/Flow1/Budget%20Summary.json) |
 | 1 | LinkedIn Post | [doc](documentation/LinkedIn%20Post.md) | [json](workflows/Flow1/LinkedIn%20Post.json) |
-| 1 | Morning Brief | [doc](documentation/Morning%20Brief.md) | [json](workflows/Flow1/Morning%20Brief.json) |
+| 3 | Morning Brief | [doc](documentation/Morning%20Brief.md) | [json](workflows/Flow3/Morning%20Brief.json) |
 | 2 | AI Newsletter Auto Post | [doc](documentation/AI%20Newsletter%20Auto%20Post.md) | [json](workflows/Flow2/AI%20Newsletter%20Auto%20Post.json) |
 | 2 | Telegram Approval Handler | [doc](documentation/Telegram%20Approval%20Handler.md) | [json](workflows/Flow2/Telegram%20Approval%20Handler.json) |
 
@@ -92,8 +93,9 @@ The flows persist intermediate state in three n8n Data Tables:
 
 ## Importing into n8n
 
-1. In n8n, **Workflows → Import from File** and pick a JSON from `workflows/Flow1/` or `workflows/Flow2/`.
+1. In n8n, **Workflows → Import from File** and pick a JSON from `workflows/Flow1/`, `workflows/Flow2/`, or `workflows/Flow3/`.
 2. Open each red-flagged node and reconnect it to your own credentials.
 3. Recreate the Data Tables listed above (matching column names) in the same project.
 4. For Flow 1, start with `TelegramInterface` and `MCP Server` — the rest are called as sub-workflows.
 5. For Flow 2, both workflows must be active for the approval loop to work.
+6. For Flow 3, activate `Morning Brief` and ensure Flow 1 sub-workflows (AI News Summarizer, Daily Share Market Snapshot) are imported.
