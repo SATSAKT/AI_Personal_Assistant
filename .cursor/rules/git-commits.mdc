@@ -1,0 +1,12 @@
+---
+description: Git commit author and attribution for this repository
+alwaysApply: true
+---
+
+# Git commits
+
+When creating git commits in this repository:
+
+- Use the repository's configured author: **SATHISH SAKTHIVEL** (`sathisheee1297@gmail.com`).
+- **Never** add `Co-authored-by:` trailers or any Cursor/agent co-author lines to commit messages.
+- Commit messages should contain only the subject and body the user requested—no attribution footers.
